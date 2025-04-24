@@ -130,9 +130,7 @@ function GeneratePage() {
             formData.append('images', file)
         })
 
-        const res = await api.post('/edit', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' },
-        })
+        const res = await api.post('/edit', formData)
 
         newImages = (res.data.data as APIImage[]).map((d) => ({
             b64: `data:image/png;base64,${d.b64_json}`,
@@ -212,14 +210,38 @@ function GeneratePage() {
         disabled={locked || loading}
       />
 
-      <input
-        type="file"
-        accept="image/*"
-        multiple
-        onChange={handleFilesChange}
-        className="w-full p-2 border rounded"
-        disabled={locked || loading}
-      />
+        {!locked && (
+        <input
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleFilesChange}
+            className="w-full p-2 border rounded"
+            disabled={loading}
+        />
+        )}
+
+        {imageFiles.length > 0 && (
+        <div className="grid grid-cols-2 gap-2">
+            {imageFiles.map((file, i) => (
+            <div key={i} className="relative">
+                <img
+                src={URL.createObjectURL(file)}
+                alt={file.name}
+                className="w-full h-auto rounded border object-cover max-h-40"
+                />
+                <button
+                onClick={() =>
+                    setImageFiles((prev) => prev.filter((_, j) => j !== i))
+                }
+                className="absolute top-1 right-1 text-xs bg-white bg-opacity-75 px-2 py-1 rounded text-red-500"
+                >
+                ✕
+                </button>
+            </div>
+            ))}
+        </div>
+        )}
 
         {images.length > 0 && (
         <ImageViewer
