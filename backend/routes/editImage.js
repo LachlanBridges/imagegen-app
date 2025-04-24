@@ -23,8 +23,12 @@ router.post('/', upload.array('images'), async (req, res) => {
   form.append('prompt', prompt)
   form.append('size', size)
   form.append('n', parseInt(n))
-  form.append('response_format', 'b64_json')
-  form.append('image', fs.createReadStream(image.path))
+  form.append('image', fs.createReadStream(image.path), {
+    filename: image.originalname,
+    contentType: image.mimetype,
+  })
+  form.append('model', 'gpt-image-1')
+
   if (mask) form.append('mask', fs.createReadStream(mask.path))
   if (quality) form.append('quality', quality)
   if (moderation) form.append('moderation', moderation)
