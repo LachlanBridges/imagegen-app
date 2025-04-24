@@ -20,7 +20,7 @@ router.post('/', async (req, res) => {
     prompt,
     model,
     size,
-    response_format: output_format,
+    output_format,
     n: parseInt(n),
     background,
     quality,
