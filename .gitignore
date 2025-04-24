@@ -51,6 +51,7 @@ coverage
 # Misc
 # ======================
 .history.json
+**/history_*.json
 *.local
 *.cache
 *.tmp
