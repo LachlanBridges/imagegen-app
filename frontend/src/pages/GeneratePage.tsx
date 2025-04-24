@@ -60,7 +60,7 @@ function GeneratePage() {
   const hardReset = () => {
     setPrompt('')
     setFormat('png')
-    setSize('1024x1024')
+    setSize('auto')
     setBackground('auto')
     setQuality('auto')
     setModeration('auto')
