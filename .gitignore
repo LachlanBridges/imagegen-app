@@ -55,7 +55,7 @@ coverage
 *.cache
 *.tmp
 *.bak
-
+**/repomix-output.txt
 # ======================
 # OS generated files
 # ======================
