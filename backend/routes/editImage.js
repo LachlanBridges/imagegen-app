@@ -3,7 +3,6 @@ const axios = require('axios')
 const multer = require('multer')
 const FormData = require('form-data')
 const fs = require('fs')
-const path = require('path')
 
 const router = express.Router()
 const upload = multer({ dest: 'uploads/' })
@@ -13,8 +12,8 @@ router.post('/', upload.array('images'), async (req, res) => {
     prompt,
     size = '1024x1024',
     quality = 'auto',
-    n = 1,
     moderation = 'auto',
+    n = 1,
   } = req.body
 
   const [image, mask] = req.files || []
@@ -22,15 +21,11 @@ router.post('/', upload.array('images'), async (req, res) => {
 
   const form = new FormData()
   form.append('prompt', prompt)
-  form.append('n', n)
   form.append('size', size)
+  form.append('n', parseInt(n))
   form.append('response_format', 'b64_json')
   form.append('image', fs.createReadStream(image.path))
-
-  if (mask) {
-    form.append('mask', fs.createReadStream(mask.path))
-  }
-
+  if (mask) form.append('mask', fs.createReadStream(mask.path))
   if (quality) form.append('quality', quality)
   if (moderation) form.append('moderation', moderation)
   if (req.user) form.append('user', req.user)
@@ -52,7 +47,6 @@ router.post('/', upload.array('images'), async (req, res) => {
     console.error('[EDIT ERROR]', err.response?.data || err.message)
     res.status(500).json({ error: 'edit failed', detail: err.message })
   } finally {
-    // cleanup
     if (image) fs.unlinkSync(image.path)
     if (mask) fs.unlinkSync(mask.path)
   }

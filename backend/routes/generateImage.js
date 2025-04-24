@@ -5,24 +5,26 @@ const router = express.Router()
 router.post('/', async (req, res) => {
   const {
     prompt,
-    model = 'dall-e-3',
+    model = 'gpt-image-1',
     size = '1024x1024',
-    background,
+    background = 'auto',
     output_format = 'b64_json',
     quality = 'auto',
     moderation = 'auto',
     n = 1,
   } = req.body
 
+  if (!prompt) return res.status(400).json({ error: 'Missing prompt' })
+
   const payload = {
     prompt,
     model,
     size,
-    n,
     response_format: output_format,
-    ...(background && { background }),
-    ...(quality && { quality }),
-    ...(moderation && { moderation }),
+    n: parseInt(n),
+    background,
+    quality,
+    moderation,
     ...(req.user && { user: req.user }),
   }
 
