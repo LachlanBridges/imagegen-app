@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import ImageViewer from '../components/ImageViewer'
 import { estimateCost } from '../lib/estimateCost'
 const FORMATS = ['png', 'jpeg', 'webp']
-const SIZES = ['1024x1024', '1536x1024', '1024x1536']
+const SIZES = ['auto', '1024x1024', '1536x1024', '1024x1536']
 const BACKGROUNDS = ['auto', 'transparent', 'opaque']
 const QUALITIES = ['auto', 'low', 'medium', 'high']
 const MODERATIONS = ['auto', 'low']
@@ -37,7 +37,7 @@ function GeneratePage() {
 
   const [prompt, setPrompt] = useState('')
   const [format, setFormat] = useState('png')
-  const [size, setSize] = useState('1024x1024')
+  const [size, setSize] = useState('auto')
   const [background, setBackground] = useState('auto')
   const [quality, setQuality] = useState('auto')
   const [moderation, setModeration] = useState('auto')
