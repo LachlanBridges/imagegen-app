@@ -1,10 +1,9 @@
+import { api } from '@/lib/api'
 import { APIImage, HistoryEntry } from '@/lib/types'
-import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import ImageViewer from '../components/ImageViewer'
 import { estimateCost } from '../lib/estimateCost'
-
 const FORMATS = ['png', 'jpeg', 'webp']
 const SIZES = ['1024x1024', '1536x1024', '1024x1536']
 const BACKGROUNDS = ['auto', 'transparent', 'opaque']
@@ -53,7 +52,7 @@ function GeneratePage() {
 
 
   useEffect(() => {
-    axios.get('/api/history').then((res) => {
+    api.get('/history').then((res) => {
       setHistory(res.data.reverse()) // show newest first
     })
   }, [])
@@ -131,7 +130,7 @@ function GeneratePage() {
             formData.append('images', file)
         })
 
-        const res = await axios.post('/api/edit', formData, {
+        const res = await api.post('/edit', formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
         })
 
@@ -140,7 +139,7 @@ function GeneratePage() {
             prompt,
           }))
         } else {
-        const res = await axios.post('/api/generate', {
+        const res = await api.post('/generate', {
             prompt,
             model: 'gpt-image-1',
             size,
@@ -163,7 +162,7 @@ function GeneratePage() {
         setLocked(true)
 
         // Save to history
-        await axios.post('/api/history', {
+        await api.post('/history', {
         user: 'lachlan',
         prompt,
         settings: {

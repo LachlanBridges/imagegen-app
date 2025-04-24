@@ -1,5 +1,5 @@
+import { api } from '@/lib/api'
 import { HistoryEntry } from '@/lib/types'
-import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import HistoryCard from '../components/HistoryCard'
@@ -9,7 +9,7 @@ export default function HistoryPage() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    axios.get('/api/history').then((res) => {
+    api.get('/history').then((res) => {
       setHistory(res.data.reverse())
     })
   }, [])
