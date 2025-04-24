@@ -1,10 +1,11 @@
+import { HistoryEntry } from '@/lib/types'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import HistoryCard from '../components/HistoryCard'
 
 export default function HistoryPage() {
-  const [history, setHistory] = useState<any[]>([])
+  const [history, setHistory] = useState<HistoryEntry[]>([])
   const navigate = useNavigate()
 
   useEffect(() => {

@@ -1,3 +1,4 @@
+import { APIImage, HistoryEntry } from '@/lib/types'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -11,6 +12,19 @@ const QUALITIES = ['auto', 'low', 'medium', 'high']
 const MODERATIONS = ['auto', 'low']
 const COUNTS = [1, 2, 3, 4, 5]
 
+
+interface LocationState {
+  prompt?: string
+  settings?: {
+    size: string
+    quality: string
+    format: string
+    background: string
+    moderation: string
+    count: number
+  }
+  frozen?: boolean
+}
 
 
 type GeneratedImage = {
@@ -34,7 +48,8 @@ function GeneratePage() {
   const [loading, setLoading] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [locked, setLocked] = useState(false)
-  const [history, setHistory] = useState<any[]>([])
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_unused, setHistory] = useState<HistoryEntry[]>([])
 
 
   useEffect(() => {
@@ -58,7 +73,7 @@ function GeneratePage() {
   }
 
   useEffect(() => {
-    const state = location.state as any
+    const state = location.state as LocationState
 
     if (state?.prompt) {
         setPrompt(state.prompt)
@@ -86,9 +101,9 @@ function GeneratePage() {
     e.target.value = ''
   }
 
-  const removeFile = (index: number) => {
-    setImageFiles((prev) => prev.filter((_, i) => i !== index))
-  }
+//   const removeFile = (index: number) => {
+//     setImageFiles((prev) => prev.filter((_, i) => i !== index))
+//   }
 
   const reset = () => {
     setPrompt('')
@@ -120,10 +135,10 @@ function GeneratePage() {
             headers: { 'Content-Type': 'multipart/form-data' },
         })
 
-        newImages = res.data.data.map((d: any) => ({
+        newImages = (res.data.data as APIImage[]).map((d) => ({
             b64: `data:image/png;base64,${d.b64_json}`,
             prompt,
-        }))
+          }))
         } else {
         const res = await axios.post('/api/generate', {
             prompt,
@@ -136,10 +151,10 @@ function GeneratePage() {
             n: count,
         })
 
-        newImages = res.data.data.map((d: any) => ({
+        newImages = (res.data.data as APIImage[]).map((d) => ({
             b64: `data:image/${format};base64,${d.b64_json}`,
             prompt,
-        }))
+            }))
         }
 
         // Save locally
@@ -300,7 +315,6 @@ function GeneratePage() {
       <div className="text-sm text-gray-600 text-center">
         Estimated cost: ~$
         {estimateCost({
-          model: 'gpt-image-1',
           size,
           quality,
           n: count,
