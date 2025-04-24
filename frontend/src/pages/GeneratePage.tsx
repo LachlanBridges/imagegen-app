@@ -161,7 +161,6 @@ function GeneratePage() {
 
         // Save to history
         await api.post('/history', {
-        user: 'lachlan',
         prompt,
         settings: {
             size,

@@ -11,8 +11,9 @@ function getHistoryPath(user) {
   return path.join(HISTORY_DIR, `history_${user}.json`)
 }
 
-router.post('/', express.json({ limit: '25mb' }), (req, res) => {
-  const { user, prompt, settings, images } = req.body
+router.post('/', (req, res) => {
+  const user = req.user
+  const { prompt, settings, images } = req.body
 
   if (!user || !prompt || !images || !Array.isArray(images)) {
     return res.status(400).json({ error: 'Invalid request' })
@@ -20,7 +21,6 @@ router.post('/', express.json({ limit: '25mb' }), (req, res) => {
 
   const filepath = getHistoryPath(user)
   const timestamp = new Date().toISOString()
-
   const entry = { prompt, settings, images, timestamp }
 
   let history = []
@@ -44,21 +44,21 @@ router.post('/', express.json({ limit: '25mb' }), (req, res) => {
 })
 
 router.get('/', (req, res) => {
-    const user = req.user  // comes from middleware that reads X-User
-    if (!user) return res.status(401).json({ error: 'Unauthorized' })
-  
-    const filepath = getHistoryPath(user)
-  
-    if (!fs.existsSync(filepath)) return res.json([])
-  
-    try {
-      const raw = fs.readFileSync(filepath, 'utf-8')
-      const data = JSON.parse(raw)
-      res.json(data)
-    } catch (err) {
-      console.error('[History Read Error]', err)
-      res.status(500).json({ error: 'Failed to read history' })
-    }
-  })
-  
+  const user = req.user
+  if (!user) return res.status(401).json({ error: 'Unauthorized' })
+
+  const filepath = getHistoryPath(user)
+
+  if (!fs.existsSync(filepath)) return res.json([])
+
+  try {
+    const raw = fs.readFileSync(filepath, 'utf-8')
+    const data = JSON.parse(raw)
+    res.json(data)
+  } catch (err) {
+    console.error('[History Read Error]', err)
+    res.status(500).json({ error: 'Failed to read history' })
+  }
+})
+
 module.exports = router
